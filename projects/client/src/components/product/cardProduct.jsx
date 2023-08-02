@@ -27,7 +27,6 @@ export const CardProduct = () => {
           },
         }
       );
-
       const updatedProducts = response.data.result.map((item) => ({
         ...item,
         qty: 0, // Initialize quantity to 0 for each product
