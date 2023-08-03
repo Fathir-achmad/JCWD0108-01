@@ -1,13 +1,15 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { ModalCard } from "./modalProduct";
 import { ModalAddProduct } from "./modalAddProduct";
 import Axios from "axios";
 import { useLocation } from "react-router-dom";
 import { PaginationProduct } from "./paginationProduct";
+import { useDispatch } from "react-redux";
+import { refreshCart } from "../../redux/cartSlice";
+import { convertToRp } from "../../helper/rupiah";
+import { ModalProductCard } from "./modalProduct";
 
 export const CardProduct = () => {
-  const token = localStorage.getItem('token');
   const [product, setProduct] = useState([]);
   const [data, setData] = useState({});
   const location = useLocation();
@@ -16,17 +18,15 @@ export const CardProduct = () => {
   const search = params.get("search") || "";
   const sort = params.get("sort") || "";
   const currentpage = Number(params.get("page")) || 1;
+  const dispatch = useDispatch()
+  const toast = useToast()
 
   const getProducts = async () => {
     try {
       const response = await Axios.get(
-        `http://localhost:8000/api/products?category=${categoryId}&search=${search}&sort=${sort}&page=${currentpage}`,
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
+        `http://localhost:8000/api/products?category=${categoryId}&search=${search}&sort=${sort}&page=${currentpage}`
       );
+
       const updatedProducts = response.data.result.map((item) => ({
         ...item,
         qty: 0, // Initialize quantity to 0 for each product
@@ -40,7 +40,7 @@ export const CardProduct = () => {
       console.log(err);
     }
   };
-  console.log(product);
+
   useEffect(() => {
     getProducts();
   }, [categoryId, search, sort, currentpage]);
@@ -52,9 +52,27 @@ export const CardProduct = () => {
         item.id === productId ? { ...item, qty: newQuantity } : item
       )
     );
-  };
 
-  console.log(data?.totalpage);
+    updateCart({ ProductId: productId, quantity: newQuantity })
+    dispatch(refreshCart())
+  };
+  const updateCart = async(value) => {
+    try {
+      await Axios.post('http://localhost:8000/api/transactions', value, {
+        // headers: {
+        //   authorization: `Bearer ${token}`
+        // }
+      });
+    } catch (err) {
+      console.log(err);
+      toast({
+        title: 'Failed to update cart',
+        status: 'error',
+        isClosable: true
+      });
+    }
+  }
+
   return (
     <Box>
       <Flex justifyContent={"center"}>
@@ -66,15 +84,15 @@ export const CardProduct = () => {
           w={"80%"}
         >
           {product.map((item, index) => (
-            <ModalCard
+            <ModalProductCard
               key={item.id}
               id={item.id}
               name={item.name}
-              price={item.price}
+              price={convertToRp(item.price)}
               quantity={item.qty}
               image={`http://localhost:8000/product/${item.image}`}
               description={item.description}
-              CategoryId={item.CategoryId}
+              categoryId={item.CategoryId}
               updateQuantity={updateQuantity}
             />
           ))}
