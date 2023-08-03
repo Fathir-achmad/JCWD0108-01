@@ -1,45 +1,93 @@
-import { SearchIcon } from "@chakra-ui/icons";
-import { Avatar, Box, Button, Flex, HStack, Link, Stack, Text } from "@chakra-ui/react";
-import { BsCart } from "react-icons/bs";
 import React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { ProfilePict } from "./avatar";
-import { ButtonTemp } from "./button";
+import {
+  Box,
+  Flex,
+  Avatar,
+  Text,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  useColorModeValue,
+  Stack,
+  useColorMode,
+  Center,
+  Input,
+  InputGroup,
+  InputRightElement,
+} from "@chakra-ui/react";
+import { MoonIcon, SearchIcon, SunIcon } from "@chakra-ui/icons";
 
-export const Navbar = (props) => {
-  const navigate = useNavigate();
-
+export const Navbar = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  //   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <Box>
-      <Flex
-        as="nav"
-        justify="space-between"
-        alignItems="center"
-        padding="1rem"
-        bg="black"
-        color="white"
-      >
-        <Flex alignItems="center">
-          <Text fontSize="2xl" fontWeight="extrabold">
-            <Link>Fast food furious</Link>
-          </Text>
-        </Flex>
+    <>
+      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+          <Box>Logo</Box>
+          <InputGroup w={"30%"}>
+            <Input
+              variant="outline"
+              placeholder="Find Product"
+              w={"100%"}
+              bg={"white"}
+              _placeholder={{ color: "black" }}
+              color={"black"}
+            />
+            <InputRightElement width="4.5rem">
+              <Button
+                ml={"30px"}
+                h="1.75rem"
+                size="sm"
+                bg={"white"}
+                color={"gray"}
+              >
+                <SearchIcon color={"black"} />
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          <Flex alignItems={"center"}>
+            <Stack direction={"row"} spacing={7}>
+              <Button onClick={toggleColorMode} bg={"transparent"}>
+                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+              </Button>
 
-        <HStack spacing={4}>
-          <ButtonTemp element={'Category'} func={() => navigate('/category')} />
-          <ButtonTemp element={<SearchIcon size="xl" />} func={() => navigate('/search')} />
-          <ButtonTemp element={<BsCart size="sm" />} func={() => navigate('/cart')} />
-              <Avatar src={props.avatar}/>
-          <Link mr={4} align="center">
-            <Stack>
-              <Box>
-                {/* <Text fontWeight="bold">{data.username}</Text> */}
-              </Box>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded={"full"}
+                  variant={"link"}
+                  cursor={"pointer"}
+                  minW={0}
+                >
+                  <Avatar
+                    size={"sm"}
+                    src={"https://avatars.dicebear.com/api/male/username.svg"}
+                  />
+                </MenuButton>
+                <MenuList alignItems={"center"}>
+                  <Center>
+                    <Avatar
+                      size={"2xl"}
+                      src={"https://avatars.dicebear.com/api/male/username.svg"}
+                    />
+                  </Center>
+                  <Center>
+                    <Text>Username</Text>
+                  </Center>
+                  <MenuDivider />
+                  <MenuItem>Your Servers</MenuItem>
+                  <MenuItem>Account Settings</MenuItem>
+                  <MenuItem>Logout</MenuItem>
+                </MenuList>
+              </Menu>
             </Stack>
-          </Link>
-        </HStack>
-      </Flex>
-      <Outlet />
-    </Box>
+          </Flex>
+        </Flex>
+      </Box>
+    </>
   );
 };
