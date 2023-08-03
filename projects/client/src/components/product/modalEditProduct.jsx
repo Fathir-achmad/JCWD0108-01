@@ -82,12 +82,7 @@ export const ModalEditProduct = ({
     try {
       const response = await Axios.get(
         "http://localhost:8000/api/categories/",
-        data,
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
+        data
       );
       setCategories(response.data.result);
     } catch (err) {

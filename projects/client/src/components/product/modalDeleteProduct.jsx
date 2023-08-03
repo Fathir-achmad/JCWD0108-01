@@ -27,7 +27,6 @@ export const ModalDeleteProduct = ({ProductId, isOpen, onClose}) => {
           }
       }
       );
-      console.log(response.data);
       toast({
         title: "Product deleted",
         description: "Your product has been deleted.",

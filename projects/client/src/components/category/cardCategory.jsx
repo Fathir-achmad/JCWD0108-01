@@ -138,7 +138,7 @@ export const CardCategory = () => {
               key={index}
               onClick={() => paginate(index + 1)}
               variant={currentPage === index + 1 ? "solid" : "outline"}
-              colorScheme={index % 2 === 0 ? "blue" : "red"}
+              colorScheme={index % 2 === 0 ? "blue" : "red"} 
             >
               {index + 1}
             </Button>

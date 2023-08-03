@@ -22,16 +22,10 @@ export const CardProduct = () => {
   const toast = useToast();
   const token = localStorage.getItem('token')
 
-
   const getProducts = async () => {
     try {
       const response = await Axios.get(
-        `http://localhost:8000/api/products?category=${categoryId}&search=${search}&sort=${sort}&page=${currentpage}`,
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
+        `http://localhost:8000/api/products?category=${categoryId}&search=${search}&sort=${sort}&page=${currentpage}`
       );
 
       const updatedProducts = response.data.result.map((item) => ({
